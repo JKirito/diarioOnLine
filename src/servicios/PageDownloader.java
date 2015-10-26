@@ -15,6 +15,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import entities.DiarioDigital;
+import entities.FormatoTexto;
 import entities.Note;
 import exceptions.ExceptionAlDescargarLink;
 import exceptions.ExceptionEstructuraNoValida;
@@ -93,14 +94,24 @@ public class PageDownloader {
 		for (Element E : articulos) {
 			String link = E.select("h2").select("a").attr("href");
 			link = link.startsWith("/") ? diario.getLINK() + link : link;
-			String volante = E.select("h3").text();
-			int posDescripcion = volante.isEmpty() ? 2 : 3;
-			String descripcion = (E.select("a").size() > 3 && E.select("a").get(3) != null) ? E.select("a").get(posDescripcion).text() : "";
-			Note nota = new Note(volante, E.select("h2").text(), descripcion, "", "", link, now);
-			titulos.add(nota);
+//			String volante = E.select("h3").text();
+//			int posDescripcion = volante.isEmpty() ? 2 : 3;
+//			String descripcion = (E.select("a").size() > 3 && E.select("a").get(3) != null) ? E.select("a").get(posDescripcion).text() : "";
+//			Note nota = new Note(volante, E.select("h2").text(), descripcion, "", "", link, now);
+			NoteDownloader downloader = new NoteDownloader(diario, link);
+			downloader.run();
+			Note nota = downloader.getNota();
+			nota.setFechaInit(now);
+			if(validarNota(nota))
+				titulos.add(nota);
 		}
 
 		return titulos;
+	}
+	
+	private boolean validarNota(Note nota)
+	{
+		return nota != null & nota.getTitulo() != null && nota.getCuerpo() != null && !nota.getCuerpo().trim().isEmpty(); 
 	}
 
 }

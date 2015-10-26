@@ -17,49 +17,12 @@ import entities.Seccion;
 
 public class NotesRecolator extends Observable {
 
-	private String pathAGuardar;
-	private String pathOrigen;
 	private Integer THREADS_NUMBER;
 	private DiarioDigital diario;
 	private FormatoSalida formatoSalida;
 	ExecutorService executor;
-	/**
-	 * Contador para todas las descargas - Utilzado para JProgress
-	 */
-	private AtomicInteger descargasARealizar = new AtomicInteger(0);
-	/**
-	 * Contador para las descargas que realmente se descargaron
-	 */
-	private AtomicInteger descargasRealizadas = new AtomicInteger(0);
-	/**
-	 * Contador para las descargas que no fueron necesarias porque ya existían
-	 * los archivos
-	 */
-	private AtomicInteger descargasNoNecesarias = new AtomicInteger(0);
-	/**
-	 * Contador para las descargas fallidas-No realizadas
-	 */
-	private AtomicInteger descargasFallidas = new AtomicInteger(0);
-	/**
-	 * Si true, detiene la descarga
-	 */
-	private boolean detener = false;
-	private List<String> erroresDescarga = new ArrayList<String>();
-	private boolean override;
 	private Seccion seccion;
 	private Elements notasABuscar;
-
-//	public NotesRecolator(String carpetaOrigen, String carpetaDestino, int cantHilos, DiarioDigital diario,
-//			Seccion seccion, FormatoSalida formato, boolean override) {
-//		this.pathOrigen = carpetaOrigen;
-//		this.pathAGuardar = carpetaDestino;
-//		this.THREADS_NUMBER = cantHilos;
-//		this.diario = diario;
-//		this.seccion = seccion;
-//		this.formatoSalida = formato;
-//		executor = Executors.newFixedThreadPool(THREADS_NUMBER);
-//		this.override = override;
-//	}
 
 	public NotesRecolator(Integer tHREADS_NUMBER2, DiarioDigital diario2, Elements articulos, String pathAGuardar2) {
 		this.THREADS_NUMBER = tHREADS_NUMBER2;
@@ -94,14 +57,6 @@ public class NotesRecolator extends Observable {
 				e.printStackTrace();
 			}
 		}
-		if (detener) {
-			detener = false;
-		}
-	}
-
-
-	public List<String> getErroresDescarga() {
-		return erroresDescarga;
 	}
 
 }

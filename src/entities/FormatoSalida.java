@@ -1,5 +1,7 @@
 package entities;
 
+import javax.swing.text.Document;
+
 public abstract class FormatoSalida {
 	private String nombre;
 	private String extension;
@@ -22,7 +24,7 @@ public abstract class FormatoSalida {
 	public void setExtension(String extension) {
 		this.extension = extension;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

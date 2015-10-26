@@ -72,8 +72,6 @@ public class NoteProcessor implements Runnable {
 	}
 
 	public void run() {
-//		this.getRecolector().incrementDescargasARealizar();
-		//TODO si esta al ppio avanza demasiado rapido la barra de jprogres!
 		System.out.println("procesor!!! "+Thread.currentThread());
 		System.out.println(this.elem.select("h2").text());
 

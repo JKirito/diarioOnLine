@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import servicios.NoteDownloader;
 import servicios.PageDownloader;
 import Utils.StoreFile;
 import Utils.Utils;
@@ -78,12 +79,12 @@ public class Init {
 
 		Set<Note> ultimosTitulos = new HashSet<Note>();
 
-		DiarioDigital dd = new LaNacion();
+		DiarioDigital dLaNacion = new LaNacion();
 		int contPuntosBuscando = 0;
 
 		while (true) {
 
-			PageDownloader pd = new PageDownloader(dd, soloPortada);
+			PageDownloader pd = new PageDownloader(dLaNacion, soloPortada);
 			Set<Note> nuevosTitulos = null;
 			boolean detener = false;
 			String infoError = "";
@@ -116,7 +117,7 @@ public class Init {
 			
 			if(detener)
 			{
-				mostrarMensaje("Intentando ejecutar en " +Utils.getTime(tiempoReconexion)+ "...", true, true);
+				System.out.println("Intentando ejecutar en " +Utils.getTime(tiempoReconexion)+ "...");//, true, true);
 				Thread.sleep(tiempoReconexion * 1000);
 			}
 			else
@@ -145,11 +146,16 @@ public class Init {
 						ultimosTitulos.remove(T);
 						T.setFechaFin(fin);
 						mostrarMensaje("Segs online: " + T.getSegundosOnLine() + " seg. - "+T.toString(), true, true);
+						NoteDownloader nd = new NoteDownloader(dLaNacion, T.getLink());
+						nd.run();
+						Note notaFinal = nd.getNota();
+						boolean notaFinalDiferente = !notaFinal.getCuerpo().equals(T.getCuerpo());
 						// TODO: guardar en archivo
 						String fecha = Utils.dtoYYYY_MM_DD(T.getFechaInit());
-						StoreFile s = new StoreFile(pathAGuardar, ".txt", T.getInfoAGuardar(SEPARADOR), fecha, dd.getCharsetName());
+						StoreFile s = new StoreFile(pathAGuardar, ".txt", T.getInfoAGuardar(SEPARADOR), fecha, dLaNacion.getCharsetName());
 						try {
 							s.store(true);
+							//TODO guardar las nota original y final en archivos aparte
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

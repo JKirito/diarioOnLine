@@ -9,19 +9,18 @@ public class Note {
 	private String volante;
 	private String titulo;
 	private String descripcion;
-	private String cuerpoOriginal;
-	private String cuerpoFinal;
+	private String cuerpo;
 	private String autor;
 	private String link;
 	private Date fechaInit;
 	private Date fechaFin;
 
-	public Note(String volante, String titulo, String descripcion, String cuerpoOriginal, String autor, String link, Date fechaPublicacion) {
+	public Note(String volante, String titulo, String descripcion, String cuerpo, String autor, String link, Date fechaPublicacion) {
 		super();
 		this.volante = volante;
 		this.titulo = titulo;
 		this.descripcion = descripcion;
-		this.cuerpoOriginal = cuerpoOriginal;
+		this.cuerpo = cuerpo;
 		this.autor = autor;
 		this.link = link;
 		this.fechaInit = fechaPublicacion;
@@ -44,7 +43,7 @@ public class Note {
 	}
 
 	public String getCuerpo() {
-		return cuerpoOriginal;
+		return cuerpo;
 	}
 
 	public String getAutor() {
@@ -65,6 +64,14 @@ public class Note {
 
 	public void setFechaFin(Date date) {
 		this.fechaFin = date;
+	}
+	
+	public void setLink(String link) {
+		this.link = link;
+	}
+	
+	public void setFechaInit(Date fechaInit) {
+		this.fechaInit = fechaInit;
 	}
 
 	/**
@@ -97,28 +104,28 @@ public class Note {
 	public String toString(){
 		String nota = "";
 		if(!this.volante.trim().isEmpty()){
-			nota+=this.volante + "\r\n";
+			nota+="VOLANTE-->"+this.volante + "\r\n";
 		}
 		if(!this.titulo.trim().isEmpty()){
-			nota+= this.titulo +"\r\n";
+			nota+= "TITULO-->"+this.titulo +"\r\n";
 		}
 		if(!this.descripcion.trim().isEmpty()){
-			nota+= this.descripcion + "\r\n";
+			nota+= "DESCRIPCION-->"+this.descripcion + "\r\n";
 		}
-		if(!this.cuerpoOriginal.trim().isEmpty()){
-			nota+= this.cuerpoOriginal + "\r\n";
+		if(!this.cuerpo.trim().isEmpty()){
+			nota+= "CUERPO-->"+this.cuerpo + "\r\n";
 		}
 		if(!this.autor.trim().isEmpty()){
-			nota+= this.autor + "\r\n";
+			nota+= "AUTOR-->"+this.autor + "\r\n";
 		}
 		if(!this.link.trim().isEmpty()){
-			nota+= this.link + "\r\n";
+			nota+= "LINK-->"+this.link + "\r\n";
 		}
 		if(this.fechaInit != null){
-			nota+= "apareció: " + this.fechaInit + "\r\n";
+			nota+= "FechaInicio-->"+this.fechaInit + "\r\n";
 		}
 		if(this.fechaFin != null){
-			nota+= "Fin:" + this.fechaFin + "\r\n";
+			nota+= "FechaFin-->"+this.fechaFin + "\r\n";
 		}
 		if(this.fechaInit != null && this.fechaFin != null){
 			nota+= "Segs online: " + this.getSegundosOnLine() + "\r\n";
@@ -131,6 +138,7 @@ public class Note {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((link == null) ? 0 : link.hashCode());
+		result = prime * result + ((titulo == null) ? 0 : titulo.hashCode());
 		return result;
 	}
 
@@ -148,9 +156,14 @@ public class Note {
 				return false;
 		} else if (!link.equals(other.link))
 			return false;
+		if (titulo == null) {
+			if (other.titulo != null)
+				return false;
+		} else if (!titulo.equals(other.titulo))
+			return false;
 		return true;
 	}
-	
+
 	private boolean validarDatosAGuardar()
 	{
 		return this.link != null && !this.link.trim().isEmpty() && this.titulo != null && this.fechaInit != null && this.fechaFin != null;

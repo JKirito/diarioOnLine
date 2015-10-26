@@ -95,8 +95,16 @@ public abstract class DiarioDigital {
 
 	public abstract boolean isLaNacion();
 
+	/**
+	 * 
+	 * @param doc
+	 * @return Nota con tags html eliminados, sólo texto
+	 */
 	public abstract Note getNotaProcesadaFromDocument(Document doc);
 
+	/**
+	 * Elimina partes de la nota que no son necesarias ni para formato html ni txt
+	 */
 	public abstract Document getNotaPreProcesadaFromDocument(Document doc);
 
 	public abstract String getlinkNota(String attr);
