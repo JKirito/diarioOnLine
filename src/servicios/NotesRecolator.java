@@ -1,14 +1,8 @@
 package servicios;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Observable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import entities.DiarioDigital;
@@ -23,6 +17,7 @@ public class NotesRecolator extends Observable {
 	ExecutorService executor;
 	private Seccion seccion;
 	private Elements notasABuscar;
+	private String pathAGuardar;
 
 	public NotesRecolator(Integer tHREADS_NUMBER2, DiarioDigital diario2, Elements articulos, String pathAGuardar2) {
 		this.THREADS_NUMBER = tHREADS_NUMBER2;
@@ -33,30 +28,30 @@ public class NotesRecolator extends Observable {
 	}
 
 	public void iniciar() {
-
-		// Obtener los links asociados a las notas de cada archivo
-		for (Element E : notasABuscar) {
-			NoteProcessor np = null;
-			np = new NoteProcessor(this, "archivoName", E, pathAGuardar, diario, seccion, formatoSalida, override);
-			while (((ThreadPoolExecutor) executor).getActiveCount() == THREADS_NUMBER) {
-				try {
-					Thread.sleep(300);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			executor.submit(np);
-		}
-		// Hasta que no termine de descargar todos, que espere..
-		while (((ThreadPoolExecutor) executor).getActiveCount() != 0) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+//
+//		// Obtener los links asociados a las notas de cada archivo
+//		for (Element E : notasABuscar) {
+//			NoteProcessor np = null;
+//			np = new NoteProcessor(this, "archivoName", E, pathAGuardar, diario, seccion, formatoSalida, override);
+//			while (((ThreadPoolExecutor) executor).getActiveCount() == THREADS_NUMBER) {
+//				try {
+//					Thread.sleep(300);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//			executor.submit(np);
+//		}
+//		// Hasta que no termine de descargar todos, que espere..
+//		while (((ThreadPoolExecutor) executor).getActiveCount() != 0) {
+//			try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 	}
 
 }

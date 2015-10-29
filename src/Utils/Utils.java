@@ -157,16 +157,17 @@ public class Utils {
 		return (int)Math.abs(((fin.getTime() - inicio.getTime()) / 1000));
 	}
 
-	public static String dateToStrin1(Date fecha) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(fecha);
-		String año = cal.YEAR + "";
-		String mes = cal.MONTH + "";
-		String dia = cal.DAY_OF_MONTH + "";
-		String hora = cal.HOUR_OF_DAY + "";
-		String min = cal.MINUTE + "";
-		String seg = cal.SECOND + "";
-		return año + mes + dia + " " + hora + min + seg;
+	/**
+	 *  Convierte de una fecha date a string del tipo "yyyymmdd hhmmss"
+	 *  Ejemplo date(30/01/2012 20:15:12) lo pasa al string "20120130 201512" 
+	 * @param fecha
+	 * @return
+	 */
+	public static String dateToString1(Date fecha) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("YYYYMMdd HHmmss");
+		dateFormat.format(fecha);
+
+		return dateFormat.format(fecha).toString();
 	}
 
 }

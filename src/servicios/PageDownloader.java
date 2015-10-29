@@ -32,7 +32,7 @@ public class PageDownloader {
 		this.soloPortada = soloPortada;
 	}
 
-	public Set<Note> downloadTitulos() throws InterruptedException, ExceptionAlDescargarLink, UnknownHostException, SocketTimeoutException, ExceptionEstructuraNoValida {
+	public Set<Note> downloadTitulos() throws Exception {
 
 		// String fecha = diario.getFechaConFormato(fechaDate);
 		String linkActual = diario.getLINK();
@@ -58,7 +58,7 @@ public class PageDownloader {
 		} catch (UnknownHostException e) {
 			StringWriter errors = new StringWriter();
 			e.printStackTrace(new PrintWriter(errors));
-			throw new UnknownHostException("Esto puede deberse a una desconexión de internet"+" "+errors.toString());
+			throw new UnknownHostException("Esto puede deberse a una desconexión de internet o una URL mal formada"+" "+errors.toString());
 		} catch (SocketTimeoutException e) {
 			StringWriter errors = new StringWriter();
 			e.printStackTrace(new PrintWriter(errors));
@@ -91,16 +91,26 @@ public class PageDownloader {
 		Set<Note> titulos = new HashSet<Note>();
 		Date now = new Date();
 		// Obtener los links asociados a las notas de cada archivo
-		for (Element E : articulos) {
-			String link = E.select("h2").select("a").attr("href");
+		for (Element articulo : articulos) {
+			String link = articulo.select("h2").select("a").attr("href");
 			link = link.startsWith("/") ? diario.getLINK() + link : link;
 //			String volante = E.select("h3").text();
 //			int posDescripcion = volante.isEmpty() ? 2 : 3;
 //			String descripcion = (E.select("a").size() > 3 && E.select("a").get(3) != null) ? E.select("a").get(posDescripcion).text() : "";
 //			Note nota = new Note(volante, E.select("h2").text(), descripcion, "", "", link, now);
 			NoteDownloader downloader = new NoteDownloader(diario, link);
-			downloader.run();
-			Note nota = downloader.getNota();
+//			downloader.run();
+//			Note nota = downloader.getNota();
+			Note nota = null;
+			try {
+				nota = downloader.call();
+			} catch (Exception e2) {
+				System.out.println("Error al descargar!!!"+articulo.select("h2").text());
+				if(Conexion.isOnline())
+					continue;
+				else
+					throw e2;
+			}
 			nota.setFechaInit(now);
 			if(validarNota(nota))
 				titulos.add(nota);

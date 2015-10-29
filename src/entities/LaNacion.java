@@ -160,7 +160,6 @@ public class LaNacion extends DiarioDigital {
 			cuerpo.select(SELECT_FIGURE).remove();
 		}
 		if (cuerpo.getElementsByAttributeValue("class", CLASS_TEXTO_CITADO) != null) {
-			System.out.println("imagen descripciuon");
 			cuerpo.getElementsByAttributeValue("class", CLASS_TEXTO_CITADO).remove();
 		}
 	

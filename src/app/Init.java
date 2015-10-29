@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import servicios.AdminNotes;
 import servicios.NoteDownloader;
 import servicios.PageDownloader;
 import Utils.StoreFile;
@@ -76,16 +77,30 @@ public class Init {
 		}
 		
 		MOSTRAR_NOTICIAS = args[3].equalsIgnoreCase("true") ? true : false;
+		
+		//Carpeta extra para los títulos
+		String pathTitulos = pathAGuardar+File.separatorChar+"titulos"+File.separatorChar;
+		String pathNotas = pathAGuardar+File.separatorChar+"notas"+File.separatorChar;
+		try {
+			new File(pathTitulos).mkdirs();
+			new File(pathNotas).mkdirs();
+		} catch (Exception e) {
+			System.out.println("Verifique que tenga permisos para crear archivos y carpetas en la ruta especificada: "+pathAGuardar+"\n\n");
+			e.printStackTrace();
+		}
 
 		Set<Note> ultimosTitulos = new HashSet<Note>();
 
 		DiarioDigital dLaNacion = new LaNacion();
 		int contPuntosBuscando = 0;
+		
+		System.out.println("Iniciando...");
 
 		while (true) {
 
 			PageDownloader pd = new PageDownloader(dLaNacion, soloPortada);
 			Set<Note> nuevosTitulos = null;
+			boolean pausarDescarga = false;
 			boolean detener = false;
 			String infoError = "";
 			try {
@@ -93,21 +108,25 @@ public class Init {
 			} catch (ExceptionAlDescargarLink e) {
 				System.out.println("\n"+"Ups! Esto es embarazoso: parece que no ha descargado el link. ¿Está conectado a internet?");
 				infoError = e.toString();
-				detener = true;
+				pausarDescarga = true;
 			} catch (SocketTimeoutException e) {
 				System.out.println("\n"+"Error por Time out");
 				infoError = e.toString();
-				detener = true;
+				pausarDescarga = true;
 			} catch (UnknownHostException e) {
 				System.out.println("\n"+"Error! Esto puede deberse a una desconexión de internet.");
 				infoError = e.toString();
-				detener = true;
+				pausarDescarga = true;
 			} catch (ExceptionEstructuraNoValida e) {
 				System.out.println("\n"+e.getMessage());
 				infoError = e.toString();
 				detener = true;
+			} catch (Exception e) {
+				System.out.println("\n"+e.getMessage());
+				infoError = e.toString();
+				pausarDescarga = true;
 			} finally {
-				if(detener)
+				if(pausarDescarga)
 				{
 					System.out.println("INFO ADICIONAL DEL ERROR:");
 					System.out.println(infoError);
@@ -115,10 +134,15 @@ public class Init {
 			}
 			
 			
-			if(detener)
+			if(pausarDescarga)
 			{
 				System.out.println("Intentando ejecutar en " +Utils.getTime(tiempoReconexion)+ "...");//, true, true);
 				Thread.sleep(tiempoReconexion * 1000);
+			}
+			else if(detener)
+			{
+				System.out.println("\n*PROGRAMA DETENIDO*\n");
+				System.exit(1);
 			}
 			else
 			{
@@ -143,23 +167,31 @@ public class Init {
 					//eliminar T de ultimosTitulos, agregarle la fecha fin y guardarlo en un archivo
 					if (!nuevosTitulos.contains(T))
 					{
-						ultimosTitulos.remove(T);
+						Note copiaAEliminar = T.clone();
 						T.setFechaFin(fin);
-						mostrarMensaje("Segs online: " + T.getSegundosOnLine() + " seg. - "+T.toString(), true, true);
+						mostrarMensaje("Segs online: " + AdminNotes.getSegundosOnLine(T) + " seg. - "+T.toString(), true, true);
 						NoteDownloader nd = new NoteDownloader(dLaNacion, T.getLink());
-						nd.run();
-						Note notaFinal = nd.getNota();
-						boolean notaFinalDiferente = !notaFinal.getCuerpo().equals(T.getCuerpo());
-						// TODO: guardar en archivo
-						String fecha = Utils.dtoYYYY_MM_DD(T.getFechaInit());
-						StoreFile s = new StoreFile(pathAGuardar, ".txt", T.getInfoAGuardar(SEPARADOR), fecha, dLaNacion.getCharsetName());
+						Note notaFinal = null;
+						try {
+							notaFinal = nd.call();
+						} catch (Exception e) {
+							e.printStackTrace();
+							continue;
+						}
+						String stringFechaApareceNota = Utils.dtoYYYY_MM_DD(T.getFechaInit());
+						//Agrega una linea al archivo con los titulos
+						StoreFile s = new StoreFile(pathTitulos, ".txt", AdminNotes.getInfoAGuardar(T, SEPARADOR), stringFechaApareceNota, dLaNacion.getCharsetName());
+						
+						//Creo un nuevo archivo con el id de la nota, que contiene una única línea con el cuerpo de la nota original y final (por si se modificó)
+						StoreFile s2 = new StoreFile(pathNotas, ".txt", AdminNotes.getCuerposNotas(T, notaFinal, SEPARADOR), T.getId()+"", dLaNacion.getCharsetName());
 						try {
 							s.store(true);
-							//TODO guardar las nota original y final en archivos aparte
+							s2.store(true);
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						ultimosTitulos.remove(copiaAEliminar);
 					} else
 					{
 						nuevosTitulos.remove(T);

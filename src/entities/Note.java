@@ -3,8 +3,6 @@ package entities;
 
 import java.util.Date;
 
-import Utils.Utils;
-
 public class Note {
 	private String volante;
 	private String titulo;
@@ -74,33 +72,6 @@ public class Note {
 		this.fechaInit = fechaInit;
 	}
 
-	/**
-	 * Devuelve la diferencia entre la fechaHora que dejó de estar online con la fechaHora
-	 * que apareció online
-	 * 
-	 * @return cantidad de segundos que estuvo online la nota
-	 */
-	public Integer getSegundosOnLine() {
-		Integer segs = (int) ((this.fechaFin.getTime() - fechaInit.getTime())/1000);
-		return segs;
-	}
-
-	/**
-	 * Texto a guardar en una única linea:
-	 *  "link titulo##fechaInicio#fechaFin
-	 * @param separador
-	 * @return
-	 */
-	public String getInfoAGuardar(String separador) {
-		String nota = "";
-
-		if(!validarDatosAGuardar())
-			return null;
-
-		//Link Titulo##fechaHoraInicio##fechaHoraFin
-		return nota+= this.link+" "+this.titulo+separador + Utils.dateToStrin1(this.fechaInit) + separador+this.fechaFin;
-	}
-
 	public String toString(){
 		String nota = "";
 		if(!this.volante.trim().isEmpty()){
@@ -126,9 +97,6 @@ public class Note {
 		}
 		if(this.fechaFin != null){
 			nota+= "FechaFin-->"+this.fechaFin + "\r\n";
-		}
-		if(this.fechaInit != null && this.fechaFin != null){
-			nota+= "Segs online: " + this.getSegundosOnLine() + "\r\n";
 		}
 		return nota;
 	}
@@ -164,9 +132,31 @@ public class Note {
 		return true;
 	}
 
-	private boolean validarDatosAGuardar()
+	public Note clone()
 	{
-		return this.link != null && !this.link.trim().isEmpty() && this.titulo != null && this.fechaInit != null && this.fechaFin != null;
+		Note n = new Note(this.volante, this.titulo, this.descripcion, this.cuerpo, this.autor, this.link, this.fechaInit);
+		n.setFechaFin(this.fechaFin);
+		return n;
+	}
+	
+	/**
+	 * 
+	 * @param other 
+	 * @return true sii el link y título de this y other (parametro) son iguales,
+	 * pero el cuerpo es diferente
+	 */
+	public boolean isSoloCuerpoDiferente(Note other)
+	{
+		if(other != null && this.getId() == other.getId())
+		{
+			return other.getCuerpo().equals(this.cuerpo);
+		}
+		return false;
+	}
+	
+	public int getId()
+	{
+		return (this.link+this.titulo).hashCode();
 	}
 
 }
