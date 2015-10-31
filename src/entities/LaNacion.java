@@ -20,6 +20,7 @@ public class LaNacion extends DiarioDigital {
 	public static final String NOMBRE_GRUPO_NOTICIAS = "archivo-notas-";
 	public static final String NOMBRE_PORTADA = "apertura";
 	public static final String NOMBRE_MOSAICO = "mosaico";
+	public static final String CLASS_DEPORTES = "categoria deportes floatFix";
 	
 	//Descripción nota (volanta) 
 	public static final String CLASS_BAJADA = "bajada";
@@ -61,6 +62,7 @@ public class LaNacion extends DiarioDigital {
 		super.setNombreGrupoNoticias(NOMBRE_GRUPO_NOTICIAS);
 		super.setNombrePortada(NOMBRE_PORTADA);
 		super.setNombreMosaico(NOMBRE_MOSAICO);
+		super.setNombreDeportes(CLASS_DEPORTES);
 		super.setNombreDiario(NOMBRE_DIARIO);
 	}
 
@@ -83,6 +85,41 @@ public class LaNacion extends DiarioDigital {
 	public boolean esValidoMosaico(Document doc) {
 		return doc.getElementById(this.getNombreMosaico()) != null;
 	}
+	
+	@Override
+	public boolean esValidoDeportes(Document doc) {
+		return doc.getElementsByAttributeValue("class", this.getNombreDeportes()) != null;
+	}
+
+	@Override
+	public boolean esValidoSociedad(Document doc) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean esValidoNegocios(Document doc) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean esValidoIdeas(Document doc) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean esValidoEspectaculos(Document doc) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean esValidoRevistas(Document doc) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 	@Override
 	public Element getPortada(Document page) {
@@ -92,6 +129,11 @@ public class LaNacion extends DiarioDigital {
 	@Override
 	public Element getMosaico(Document page) {
 		return page.getElementById(this.getNombreMosaico());
+	}
+	
+	@Override
+	public Element getDeportes(Document page) {
+		return page.getElementsByAttributeValue("class", this.getNombreDeportes()).first();
 	}
 
 	@Override
@@ -173,6 +215,7 @@ public class LaNacion extends DiarioDigital {
 	/**
 	 * Elimina partes de la nota que no son necesarias ni para formato html ni txt
 	 */
+	@Override
 	public Document getNotaPreProcesadaFromDocument(Document doc) {
 		if (doc.getElementById(ID_NOTA) == null) {
 			System.out.println("No tiene encabezado");
@@ -223,7 +266,5 @@ public class LaNacion extends DiarioDigital {
 	public String getlinkNota(String link) {
 		return link;
 	}
-
-
 
 }

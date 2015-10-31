@@ -22,11 +22,12 @@ import exceptions.ExceptionEstructuraNoValida;
 public class Init {
 
 	static String ultimoMsj = "";
-	static String MSJ_BUSCANDO_CAMBIOS = "Buscando cambios...";
+	static String MSJ_BUSCANDO_CAMBIOS = "Buscando cambios";
 	static String SEPARADOR = "##";
 	static boolean MOSTRAR_NOTICIAS = true;
 	static String MSJ_INGRESE_PARAMETROS_CORRECTAMENTE = "Ingrese correctamente los parámetros: 'pathGuardarArchivo(texto) SegundosABuscarNuevasNotas(Número) SoloPortada(true/false) MostrarNoticiasEnConsola(true/false)' ";
 	static Integer tiempoReconexion = 60;
+	static Integer pollTime;
 
 	public static void main(String[] args) throws InterruptedException {
 
@@ -50,7 +51,7 @@ public class Init {
 
 
 		// POLL TIME [1]
-		Integer pollTime = null;
+		pollTime = null;
 
 		try {
 			pollTime = Integer.valueOf(args[1]); // seg
@@ -87,17 +88,17 @@ public class Init {
 		} catch (Exception e) {
 			System.out.println("Verifique que tenga permisos para crear archivos y carpetas en la ruta especificada: "+pathAGuardar+"\n\n");
 			e.printStackTrace();
+			System.exit(1);
 		}
 
 		Set<Note> ultimosTitulos = new HashSet<Note>();
 
 		DiarioDigital dLaNacion = new LaNacion();
-		int contPuntosBuscando = 0;
-		
+
 		System.out.println("Iniciando...");
 
 		while (true) {
-
+//			Date init = new Date();
 			PageDownloader pd = new PageDownloader(dLaNacion, soloPortada);
 			Set<Note> nuevosTitulos = null;
 			boolean pausarDescarga = false;
@@ -105,6 +106,7 @@ public class Init {
 			String infoError = "";
 			try {
 					nuevosTitulos = pd.downloadTitulos();
+//					System.out.println("tardo "+(new Date().getTime()-init.getTime())/1000);
 			} catch (ExceptionAlDescargarLink e) {
 				System.out.println("\n"+"Ups! Esto es embarazoso: parece que no ha descargado el link. ¿Está conectado a internet?");
 				infoError = e.toString();
@@ -122,9 +124,9 @@ public class Init {
 				infoError = e.toString();
 				detener = true;
 			} catch (Exception e) {
-				System.out.println("\n"+e.getMessage());
 				infoError = e.toString();
 				pausarDescarga = true;
+				System.out.println("fin mensaje!!!!!!!!!!!!!!!!!!!!!!!!!!!!1111");
 			} finally {
 				if(pausarDescarga)
 				{
@@ -136,12 +138,12 @@ public class Init {
 			
 			if(pausarDescarga)
 			{
-				System.out.println("Intentando ejecutar en " +Utils.getTime(tiempoReconexion)+ "...");//, true, true);
+				System.out.println(Utils.dtoYYYY_MM_DD_HH_mm_ss(new Date())+": Intentando ejecutar en " +Utils.getTime(tiempoReconexion)+ "...\n\n\n");
 				Thread.sleep(tiempoReconexion * 1000);
 			}
 			else if(detener)
 			{
-				System.out.println("\n*PROGRAMA DETENIDO*\n");
+				System.out.println("\n"+Utils.dtoYYYY_MM_DD_HH_mm_ss(new Date())+"*PROGRAMA DETENIDO*\n");
 				System.exit(1);
 			}
 			else
@@ -188,7 +190,6 @@ public class Init {
 							s.store(true);
 							s2.store(true);
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						ultimosTitulos.remove(copiaAEliminar);
@@ -201,11 +202,13 @@ public class Init {
 				int contTitulos = 1;
 				if(ultimosTitulos.size() > 0 && nuevosTitulos.size() > 0)
 				{
-				mostrarMensaje("\nTitulos actuales\n", true, true);
-				for (Note N : ultimosTitulos) {
-					mostrarMensaje(contTitulos+") "+N.toString(), true, true);
-					contTitulos++;
-				}
+					mostrarMensaje("\nTitulos actuales\n", true, true);
+					for (Note N : ultimosTitulos)
+					{
+						mostrarMensaje(contTitulos + ") " + N.toString(), true,
+								true);
+						contTitulos++;
+					}
 	
 				}
 	
@@ -227,17 +230,12 @@ public class Init {
 				}
 				else
 				{
-					//Si es 58, entonces ya mostró 57 "." (más los 3 iniciales del MSJ_BUSCANDO_CAMBIOS, son 60 = 1hs)
-					//Cada 60 ".", sigo mostrando "." debajo.
-					boolean nuevaLinea = contPuntosBuscando == 58;
-					mostrarMensaje(".", nuevaLinea, true);
-					contPuntosBuscando++;
+					mostrarMensaje(".", false, true);
 				}
 	
 				try {
 					Thread.sleep(pollTime * 1000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -252,17 +250,16 @@ public class Init {
 	 * @guardarMsj: Guarda en una variable el último a mostrar
 	 */
 	private static void mostrarMensaje(String mensaje, boolean nuevaLinea, boolean guardarMsj) {
-//		if(ultimoMsj.equals(MSJ_BUSCANDO_CAMBIOS) && !mensaje.equals(MSJ_BUSCANDO_CAMBIOS) && !mensaje.equals(".")) {
-//			mensaje = "\n"+ mensaje;
-//		}
-		
 		//Si no quiere ver noticias, sólo muestro que está "Buscando cambios..."
-		if(!MOSTRAR_NOTICIAS && !mensaje.equals(MSJ_BUSCANDO_CAMBIOS) && !mensaje.equals(".") && !ultimoMsj.equals(MSJ_BUSCANDO_CAMBIOS))
+		if ((!MOSTRAR_NOTICIAS && !mensaje.equals(MSJ_BUSCANDO_CAMBIOS) && !mensaje.equals("."))
+				|| (mensaje.equals(MSJ_BUSCANDO_CAMBIOS) && ultimoMsj.equals(MSJ_BUSCANDO_CAMBIOS)))
 			return;
 		
 		if(guardarMsj)
 			ultimoMsj = mensaje;
 		
+		if(mensaje.equals(MSJ_BUSCANDO_CAMBIOS))
+			mensaje+= " (cada "+pollTime+" segs)";
 		if(nuevaLinea)
 			System.out.println(mensaje);
 		else

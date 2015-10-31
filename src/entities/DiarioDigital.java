@@ -15,6 +15,7 @@ public abstract class DiarioDigital {
 	protected String nombreGrupoNoticias;
 	protected String nombrePortada;
 	protected String nombreMosaico;
+	protected String nombreDeportes;
 	protected String nombreDiario;
 
 	public String getLINK() {
@@ -56,6 +57,10 @@ public abstract class DiarioDigital {
 	public String getNombreMosaico() {
 		return nombreMosaico;
 	}
+	
+	public String getNombreDeportes() {
+		return nombreDeportes;
+	}
 
 	public void setNombrePortada(String nombrePortada) {
 		this.nombrePortada = nombrePortada;
@@ -63,6 +68,10 @@ public abstract class DiarioDigital {
 
 	public void setNombreMosaico(String nombreMosaico) {
 		this.nombreMosaico = nombreMosaico;
+	}
+	
+	public void setNombreDeportes(String classDeportes) {
+		this.nombreDeportes = classDeportes;
 	}
 
 	public String getNombreDiario() {
@@ -81,11 +90,25 @@ public abstract class DiarioDigital {
 
 	public abstract boolean esValidoMosaico(Document doc);
 
+	public abstract boolean esValidoDeportes(Document doc);
+
+	public abstract boolean esValidoSociedad(Document doc);
+
+	public abstract boolean esValidoNegocios(Document doc);
+
+	public abstract boolean esValidoIdeas(Document doc);
+
+	public abstract boolean esValidoEspectaculos(Document doc);
+
+	public abstract boolean esValidoRevistas(Document doc);
+
 	public abstract Element getNombreGrupoNoticias(Document page);
 
 	public abstract Element getPortada(Document page);
 
 	public abstract Element getMosaico(Document page);
+	
+	public abstract Element getDeportes(Document page);
 
 	public abstract String getFechaConFormato(Date fechaDate);
 
@@ -108,4 +131,5 @@ public abstract class DiarioDigital {
 	public abstract Document getNotaPreProcesadaFromDocument(Document doc);
 
 	public abstract String getlinkNota(String attr);
+
 }

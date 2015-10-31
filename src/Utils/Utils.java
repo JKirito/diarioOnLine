@@ -25,6 +25,18 @@ public class Utils {
 		// formatedate.setLenient(false);
 		return formatedate.format(sdate);
 	}
+	
+	/**
+	 * Convert date to string with format "yyyy-MM-dd HH:mm:ss"
+	 * 
+	 * @param sdate
+	 * @return
+	 */
+	public static String dtoYYYY_MM_DD_HH_mm_ss(Date sdate) {
+		SimpleDateFormat formatedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		// formatedate.setLenient(false);
+		return formatedate.format(sdate);
+	}
 
 	/**
 	 * Convert date to string with format "dd/mm/yyyy"

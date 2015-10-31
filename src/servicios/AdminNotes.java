@@ -1,7 +1,7 @@
 package servicios;
 
-import entities.Note;
 import Utils.Utils;
+import entities.Note;
 
 public class AdminNotes {
 
@@ -49,6 +49,9 @@ public class AdminNotes {
 	 */
 	public static String getCuerposNotas(Note n1, Note n2, String separador)
 	{
+		if(n1 == null ||  n2 == null || n1.getCuerpo() == null || n2.getCuerpo() == null)
+			return "";
+		
 		String vacio = "void";
 		String cuerpo1 = n1.getCuerpo();
 		String cuerpo2 = cuerpo1.equals(n2.getCuerpo()) ? vacio : n2.getCuerpo();
