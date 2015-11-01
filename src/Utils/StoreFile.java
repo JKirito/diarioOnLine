@@ -30,6 +30,8 @@ public class StoreFile {
 	 */
 	public StoreFile(String path, String extension, String textoAGuardar, String nombreArchivo, String charset) {
 		super();
+		if(!new File(path).exists())
+			new File(path).mkdirs();
 		this.path = path;
 		this.extension = extension;
 		this.textoAGuardar = textoAGuardar;

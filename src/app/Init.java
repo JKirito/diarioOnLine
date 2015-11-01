@@ -127,7 +127,7 @@ public class Init {
 			} catch (Exception e) {
 				infoError = e.toString();
 				pausarDescarga = true;
-				e.printStackTrace();
+				mostrarMensaje(e.toString(), true, false, true);
 			} finally {
 				if(pausarDescarga)
 				{
@@ -178,7 +178,7 @@ public class Init {
 						try {
 							notaFinal = nd.call();
 						} catch (Exception e) {
-							e.printStackTrace();
+							mostrarMensaje(e.toString(), true, false, true);
 							continue;
 						}
 						String stringFechaDiaApareceNota = Utils.dtoYYYY_MM_DD(T.getFechaInit());
@@ -191,7 +191,8 @@ public class Init {
 							s.store(true);
 							s2.store(true);
 						} catch (IOException e) {
-							e.printStackTrace();
+							mostrarMensaje(e.toString(), true, false, true);
+							continue;
 						}
 						ultimosTitulos.remove(copiaAEliminar);
 					} else
@@ -235,7 +236,7 @@ public class Init {
 				try {
 					Thread.sleep(pollTime * 1000);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					mostrarMensaje(e.toString(), true, false, true);
 				}
 			}
 		}
