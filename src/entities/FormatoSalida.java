@@ -1,6 +1,5 @@
 package entities;
 
-import javax.swing.text.Document;
 
 public abstract class FormatoSalida {
 	private String nombre;

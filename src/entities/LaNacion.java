@@ -14,6 +14,7 @@ import Utils.Utils;
 public class LaNacion extends DiarioDigital {
 
 	private static final String LINK_LANACION = "http://www.lanacion.com.ar";
+	private static final String TEXTO_EN_LINK_LANACION = "lanacion.com.ar";
 	private static final String CHARSETNAME_LANACION = "utf-8";
 	private static final String NOMBREPREFIJO_AGUARDAR = "LaNacion";
 	public static final String NOMBRE_DIARIO = "La Nación";
@@ -21,6 +22,12 @@ public class LaNacion extends DiarioDigital {
 	public static final String NOMBRE_PORTADA = "apertura";
 	public static final String NOMBRE_MOSAICO = "mosaico";
 	public static final String CLASS_DEPORTES = "categoria deportes floatFix";
+	public static final String CLASS_NEGOCIOS = "categoria negocios floatFix";
+	public static final String CLASS_SOCIEDAD = "categoria sociedad floatFix";
+	public static final String CLASS_IDEAS = "categoria ideas floatFix";
+	public static final String CLASS_ESPECTACULOS = "categoria espectaculos floatFix";
+	public static final String CLASS_REVISTAS = "categoria revistas floatFix";
+	public static final String CLASS_TABLERO_RUGBY = "cajaTablero rugby";
 	
 	//Descripción nota (volanta) 
 	public static final String CLASS_BAJADA = "bajada";
@@ -33,6 +40,7 @@ public class LaNacion extends DiarioDigital {
 	//Elementos a eliminar de una nota (en el ID_NOTA)
 	public static final String CLASS_ARCHIVOS_RELACIONADOS = "S relacionadas";
 	public static final String ID_HERRAMIENTAS_SOCIALES = "herramientas-sociales";
+	public static final String CLASS_HERRAMIENTAS_HORIZONTALES = "herramientas horizontales";
 	public static final String CLASS_MAS_DATOS = "mas-datos";
 	public static final String ID_APERTURATECHO = "aperturaTecho";
 	public static final String CLASS_EN_ESTA_NOTA = "en-esta-nota";
@@ -47,22 +55,28 @@ public class LaNacion extends DiarioDigital {
 	
 	
 
-	public LaNacion(Seccion seccion) {
-		super.setCharsetName(CHARSETNAME_LANACION);
-		super.setLINK(LINK_LANACION);
-		super.setNombrePrefijoAGuardar(NOMBREPREFIJO_AGUARDAR);
-		super.setNombreGrupoNoticias(NOMBRE_GRUPO_NOTICIAS+seccion.getNumeroSeccion());
-		super.setNombreDiario(NOMBRE_DIARIO);
-	}
+//	public LaNacion(Seccion seccion) {
+//		super.setCharsetName(CHARSETNAME_LANACION);
+//		super.setLINK(LINK_LANACION);
+//		super.setNombrePrefijoAGuardar(NOMBREPREFIJO_AGUARDAR);
+//		super.setNombreGrupoNoticias(NOMBRE_GRUPO_NOTICIAS+seccion.getNumeroSeccion());
+//		super.setNombreDiario(NOMBRE_DIARIO);
+//	}
 
 	public LaNacion() {
 		super.setCharsetName(CHARSETNAME_LANACION);
 		super.setLINK(LINK_LANACION);
+		super.setTextoEnLink(TEXTO_EN_LINK_LANACION);
 		super.setNombrePrefijoAGuardar(NOMBREPREFIJO_AGUARDAR);
 		super.setNombreGrupoNoticias(NOMBRE_GRUPO_NOTICIAS);
 		super.setNombrePortada(NOMBRE_PORTADA);
 		super.setNombreMosaico(NOMBRE_MOSAICO);
 		super.setNombreDeportes(CLASS_DEPORTES);
+		super.setNombreSociedad(CLASS_SOCIEDAD);
+		super.setNombreNegocios(CLASS_NEGOCIOS);
+		super.setNombreIdeas(CLASS_IDEAS);
+		super.setNombreEspectaculos(CLASS_ESPECTACULOS);
+		super.setNombreRevistas(CLASS_REVISTAS);
 		super.setNombreDiario(NOMBRE_DIARIO);
 	}
 
@@ -93,32 +107,27 @@ public class LaNacion extends DiarioDigital {
 
 	@Override
 	public boolean esValidoSociedad(Document doc) {
-		// TODO Auto-generated method stub
-		return false;
+		return doc.getElementsByAttributeValue("class", this.getNombreSociedad()) != null;
 	}
 
 	@Override
 	public boolean esValidoNegocios(Document doc) {
-		// TODO Auto-generated method stub
-		return false;
+		return doc.getElementsByAttributeValue("class", this.getNombreNegocios()) != null;
 	}
 
 	@Override
 	public boolean esValidoIdeas(Document doc) {
-		// TODO Auto-generated method stub
-		return false;
+		return doc.getElementsByAttributeValue("class", this.getNombreIdeas()) != null;
 	}
 
 	@Override
 	public boolean esValidoEspectaculos(Document doc) {
-		// TODO Auto-generated method stub
-		return false;
+		return doc.getElementsByAttributeValue("class", this.getNombreEspectaculos()) != null;
 	}
 
 	@Override
 	public boolean esValidoRevistas(Document doc) {
-		// TODO Auto-generated method stub
-		return false;
+		return doc.getElementsByAttributeValue("class", this.getNombreRevistas()) != null;
 	}
 
 	@Override
@@ -134,6 +143,31 @@ public class LaNacion extends DiarioDigital {
 	@Override
 	public Element getDeportes(Document page) {
 		return page.getElementsByAttributeValue("class", this.getNombreDeportes()).first();
+	}
+	
+	@Override
+	public Element getSociedad(Document page) {
+		return page.getElementsByAttributeValue("class", this.getNombreSociedad()).first();
+	}
+
+	@Override
+	public Element getNegocios(Document page) {
+		return page.getElementsByAttributeValue("class", this.getNombreNegocios()).first();
+	}
+
+	@Override
+	public Element getIdeas(Document page) {
+		return page.getElementsByAttributeValue("class", this.getNombreIdeas()).first();
+	}
+
+	@Override
+	public Element getEspectaculos(Document page) {
+		return page.getElementsByAttributeValue("class", this.getNombreEspectaculos()).first();
+	}
+
+	@Override
+	public Element getRevistas(Document page) {
+		return page.getElementsByAttributeValue("class", this.getNombreRevistas()).first();
 	}
 
 	@Override
@@ -204,6 +238,9 @@ public class LaNacion extends DiarioDigital {
 		if (cuerpo.getElementsByAttributeValue("class", CLASS_TEXTO_CITADO) != null) {
 			cuerpo.getElementsByAttributeValue("class", CLASS_TEXTO_CITADO).remove();
 		}
+		if (cuerpo.getElementsByAttributeValue("class", CLASS_TABLERO_RUGBY) != null) {
+			cuerpo.getElementsByAttributeValue("class", CLASS_TABLERO_RUGBY).remove();
+		}
 	
 		// Elements archRel = cuerpo.getElementsByAttributeValue("class",
 		// "archivos-relacionados");
@@ -225,8 +262,8 @@ public class LaNacion extends DiarioDigital {
 		Element cuerpo = doc.getElementById(ID_CUERPO);
 
 		// Eliminar datos innecesarios
-		if (cuerpo.getElementsByClass(CLASS_ARCHIVOS_RELACIONADOS) != null) {
-			cuerpo.getElementsByClass(CLASS_ARCHIVOS_RELACIONADOS).remove();
+		if (cuerpo.getElementsByAttributeValue("class", CLASS_ARCHIVOS_RELACIONADOS) != null) {
+			cuerpo.getElementsByAttributeValue("class", CLASS_ARCHIVOS_RELACIONADOS).remove();
 		}
 		if (cuerpo.getElementsByClass("fin") != null) {
 			cuerpo.getElementsByClass("fin").remove();
@@ -255,16 +292,14 @@ public class LaNacion extends DiarioDigital {
 		if (cuerpo.getElementsByAttributeValue("class", CLASS_VIDEO_LN_PRIMER_PARRAFO) != null) {
 			cuerpo.getElementsByAttributeValue("class", CLASS_VIDEO_LN_PRIMER_PARRAFO).remove();
 		}
+		if (cuerpo.getElementsByAttributeValue("class", CLASS_HERRAMIENTAS_HORIZONTALES) != null) {
+			cuerpo.getElementsByAttributeValue("class", CLASS_HERRAMIENTAS_HORIZONTALES).remove();
+		}
 
 		Document nd = new Document("");
 		nd.appendChild(encabezado).appendChild(cuerpo);
 
 		return nd;
 	}
-
-	@Override
-	public String getlinkNota(String link) {
-		return link;
-	}
-
+	
 }

@@ -18,7 +18,7 @@ public class AdminNotes {
 			return null;
 
 		//ID##Link Titulo##fechaHoraInicio##fechaHoraFin
-		return nota+= note.getId()+ separador + note.getLink()+" "+note.getTitulo()+separador + Utils.dateToString1(note.getFechaInit()) + separador+note.getFechaFin();
+		return nota+= note.getId()+ separador + note.getLink()+" "+note.getTitulo()+separador + Utils.dateToString1(note.getFechaInit()) + separador+Utils.dateToString1(note.getFechaFin());
 	}
 	
 	private static boolean validarDatosAGuardar(Note note)

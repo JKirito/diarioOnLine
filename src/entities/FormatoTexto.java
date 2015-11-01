@@ -1,7 +1,6 @@
 package entities;
 
 
-import org.jsoup.nodes.Document;
 
 public class FormatoTexto extends FormatoSalida {
 	public static final String NOMBRE = "Texto";

@@ -106,6 +106,7 @@ public class Init {
 			String infoError = "";
 			try {
 					nuevosTitulos = pd.downloadTitulos();
+//					System.out.println("cant titulos online: "+nuevosTitulos.size());
 //					System.out.println("tardo "+(new Date().getTime()-init.getTime())/1000);
 			} catch (ExceptionAlDescargarLink e) {
 				System.out.println("\n"+"Ups! Esto es embarazoso: parece que no ha descargado el link. ¿Está conectado a internet?");
@@ -126,19 +127,19 @@ public class Init {
 			} catch (Exception e) {
 				infoError = e.toString();
 				pausarDescarga = true;
-				System.out.println("fin mensaje!!!!!!!!!!!!!!!!!!!!!!!!!!!!1111");
+				e.printStackTrace();
 			} finally {
 				if(pausarDescarga)
 				{
-					System.out.println("INFO ADICIONAL DEL ERROR:");
-					System.out.println(infoError);
+					mostrarMensaje("INFO ADICIONAL DEL ERROR:", true, false, true);
+					mostrarMensaje(infoError, true, false, true);
 				}
 			}
 			
 			
 			if(pausarDescarga)
 			{
-				System.out.println(Utils.dtoYYYY_MM_DD_HH_mm_ss(new Date())+": Intentando ejecutar en " +Utils.getTime(tiempoReconexion)+ "...\n\n\n");
+				mostrarMensaje(Utils.dtoYYYY_MM_DD_HH_mm_ss(new Date())+": Intentando ejecutar en " +Utils.getTime(tiempoReconexion)+ "...\n\n\n", true, true, true);
 				Thread.sleep(tiempoReconexion * 1000);
 			}
 			else if(detener)
@@ -171,7 +172,7 @@ public class Init {
 					{
 						Note copiaAEliminar = T.clone();
 						T.setFechaFin(fin);
-						mostrarMensaje("Segs online: " + AdminNotes.getSegundosOnLine(T) + " seg. - "+T.toString(), true, true);
+						mostrarMensaje("Segs online: " + AdminNotes.getSegundosOnLine(T) + " seg. - "+T.toString(), true, true, false);
 						NoteDownloader nd = new NoteDownloader(dLaNacion, T.getLink());
 						Note notaFinal = null;
 						try {
@@ -180,9 +181,9 @@ public class Init {
 							e.printStackTrace();
 							continue;
 						}
-						String stringFechaApareceNota = Utils.dtoYYYY_MM_DD(T.getFechaInit());
+						String stringFechaDiaApareceNota = Utils.dtoYYYY_MM_DD(T.getFechaInit());
 						//Agrega una linea al archivo con los titulos
-						StoreFile s = new StoreFile(pathTitulos, ".txt", AdminNotes.getInfoAGuardar(T, SEPARADOR), stringFechaApareceNota, dLaNacion.getCharsetName());
+						StoreFile s = new StoreFile(pathTitulos, ".txt", AdminNotes.getInfoAGuardar(T, SEPARADOR), stringFechaDiaApareceNota, dLaNacion.getCharsetName());
 						
 						//Creo un nuevo archivo con el id de la nota, que contiene una única línea con el cuerpo de la nota original y final (por si se modificó)
 						StoreFile s2 = new StoreFile(pathNotas, ".txt", AdminNotes.getCuerposNotas(T, notaFinal, SEPARADOR), T.getId()+"", dLaNacion.getCharsetName());
@@ -202,11 +203,10 @@ public class Init {
 				int contTitulos = 1;
 				if(ultimosTitulos.size() > 0 && nuevosTitulos.size() > 0)
 				{
-					mostrarMensaje("\nTitulos actuales\n", true, true);
+					mostrarMensaje("\nTitulos actuales\n", true, true, false);
 					for (Note N : ultimosTitulos)
 					{
-						mostrarMensaje(contTitulos + ") " + N.toString(), true,
-								true);
+						mostrarMensaje(contTitulos + ") " + N.toString(), true, true, false);
 						contTitulos++;
 					}
 	
@@ -218,19 +218,18 @@ public class Init {
 				for (Note N : nuevosTitulos)
 				{
 					ultimosTitulos.add(N);
-					mostrarMensaje(contTitulos+") " + "NUEVA NOTA: " + N.toString(), true, true);
+					mostrarMensaje(contTitulos+") " + "NUEVA NOTA: " + N.toString(), true, true, false);
 					contTitulos++;
 				}
 	
 				// Mostrar mensaje buscando...
 				if(!ultimoMsj.equals(MSJ_BUSCANDO_CAMBIOS) && !ultimoMsj.equals("."))
 				{
-	//				mostrarMensaje("", true, false);
-					mostrarMensaje(MSJ_BUSCANDO_CAMBIOS, false, true);
+					mostrarMensaje(MSJ_BUSCANDO_CAMBIOS, false, true, false);
 				}
 				else
 				{
-					mostrarMensaje(".", false, true);
+					mostrarMensaje(".", false, true, false);
 				}
 	
 				try {
@@ -249,9 +248,9 @@ public class Init {
 	 * @param nuevaLinea: deja nueva linea al mostrar el msj (\n)
 	 * @guardarMsj: Guarda en una variable el último a mostrar
 	 */
-	private static void mostrarMensaje(String mensaje, boolean nuevaLinea, boolean guardarMsj) {
+	private static void mostrarMensaje(String mensaje, boolean nuevaLinea, boolean guardarMsj, boolean isError) {
 		//Si no quiere ver noticias, sólo muestro que está "Buscando cambios..."
-		if ((!MOSTRAR_NOTICIAS && !mensaje.equals(MSJ_BUSCANDO_CAMBIOS) && !mensaje.equals("."))
+		if ((!MOSTRAR_NOTICIAS && !isError && !mensaje.equals(MSJ_BUSCANDO_CAMBIOS) && !mensaje.equals("."))
 				|| (mensaje.equals(MSJ_BUSCANDO_CAMBIOS) && ultimoMsj.equals(MSJ_BUSCANDO_CAMBIOS)))
 			return;
 		
