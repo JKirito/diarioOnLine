@@ -27,14 +27,12 @@ import exceptions.ExceptionEstructuraNoValida;
 public class PageDownloader {
 
 	private DiarioDigital diario;
-	private boolean soloPortada;
 	//Asigno un hilo por cada nota a descargar
 	private int THREADS_NUMBER = 20;
 
-	public PageDownloader(DiarioDigital diario, boolean soloPortada) {
+	public PageDownloader(DiarioDigital diario) {
 		super();
 		this.diario = diario;
-		this.soloPortada = soloPortada;
 	}
 
 	public Set<Note> downloadTitulos() throws Exception {
@@ -61,7 +59,6 @@ public class PageDownloader {
 		Element negocios = null;
 		Element ideas = null;
 		Element espectaculos = null;
-		Element revistas = null;
 
 		try {
 			page = Jsoup.connect(linkActual).timeout(Conexion.TIMEOUT_MS_L).get();
@@ -87,69 +84,54 @@ public class PageDownloader {
 
 		Elements articulos = portada.getElementsByTag("article");
 
-		if(!soloPortada)
-		{
-			//Sección mosaico
-			if (!diario.esValidoMosaico(page)) {
-				throw new ExceptionEstructuraNoValida("Error! Parece que se modificó la estructura html del id mosaico!");
-			} else {
-				mosaico = diario.getMosaico(page);
-				articulos.addAll(mosaico.getElementsByTag("article"));
-			}
-			
-			
-			
-			//Sección deportes
-			if (!diario.esValidoDeportes(page)) {
-				throw new ExceptionEstructuraNoValida("Error! Parece que se modificó la estructura html de la class deportes!");
-			} else {
-				deportes = diario.getDeportes(page);
-				articulos.addAll(deportes.getElementsByTag("article"));
-			}
-			
-			
-			//Sección sociedad
-			if (!diario.esValidoSociedad(page)) {
-				throw new ExceptionEstructuraNoValida("Error! Parece que se modificó la estructura html de la class sociedad!");
-			} else {
-				sociedad = diario.getSociedad(page);
-				articulos.addAll(sociedad.getElementsByTag("article"));
-			}
-			
-			//Sección negocios
-			if (!diario.esValidoNegocios(page)) {
-				throw new ExceptionEstructuraNoValida("Error! Parece que se modificó la estructura html de la class negocios!");
-			} else {
-				negocios = diario.getNegocios(page);
-				articulos.addAll(negocios.getElementsByTag("article"));
-			}
-			
-			//Sección ideas
-			if (!diario.esValidoIdeas(page)) {
-				throw new ExceptionEstructuraNoValida("Error! Parece que se modificó la estructura html de la class ideas!");
-			} else {
-				ideas = diario.getIdeas(page);
-				articulos.addAll(ideas.getElementsByTag("article"));
-			}
-			
-			//Sección espectaculos
-			if (!diario.esValidoEspectaculos(page)) {
-				throw new ExceptionEstructuraNoValida("Error! Parece que se modificó la estructura html de la class espectáculos!");
-			} else {
-				espectaculos = diario.getEspectaculos(page);
-				articulos.addAll(espectaculos.getElementsByTag("article"));
-			}
-		
-			//Sección revistas
-			if (!diario.esValidoRevistas(page)) {
-				throw new ExceptionEstructuraNoValida("Error! Parece que se modificó la estructura html de la class revistas!");
-			} else {
-				revistas = diario.getRevistas(page);
-				articulos.addAll(revistas.getElementsByTag("article"));
-			}
+		//Sección mosaico
+		if (!diario.esValidoMosaico(page)) {
+			throw new ExceptionEstructuraNoValida("Error! Parece que se modificó la estructura html del id mosaico!");
+		} else {
+			mosaico = diario.getMosaico(page);
+			articulos.addAll(mosaico.getElementsByTag("article"));
 		}
-
-
+		
+		//Sección deportes
+		if (!diario.esValidoDeportes(page)) {
+			throw new ExceptionEstructuraNoValida("Error! Parece que se modificó la estructura html de la class deportes!");
+		} else {
+			deportes = diario.getDeportes(page);
+			articulos.addAll(deportes.getElementsByTag("article"));
+		}
+		
+		//Sección sociedad
+		if (!diario.esValidoSociedad(page)) {
+			throw new ExceptionEstructuraNoValida("Error! Parece que se modificó la estructura html de la class sociedad!");
+		} else {
+			sociedad = diario.getSociedad(page);
+			articulos.addAll(sociedad.getElementsByTag("article"));
+		}
+		
+		//Sección negocios
+		if (!diario.esValidoNegocios(page)) {
+			throw new ExceptionEstructuraNoValida("Error! Parece que se modificó la estructura html de la class negocios!");
+		} else {
+			negocios = diario.getNegocios(page);
+			articulos.addAll(negocios.getElementsByTag("article"));
+		}
+		
+		//Sección ideas
+		if (!diario.esValidoIdeas(page)) {
+			throw new ExceptionEstructuraNoValida("Error! Parece que se modificó la estructura html de la class ideas!");
+		} else {
+			ideas = diario.getIdeas(page);
+			articulos.addAll(ideas.getElementsByTag("article"));
+		}
+		
+		//Sección espectaculos
+		if (!diario.esValidoEspectaculos(page)) {
+			throw new ExceptionEstructuraNoValida("Error! Parece que se modificó la estructura html de la class espectáculos!");
+		} else {
+			espectaculos = diario.getEspectaculos(page);
+			articulos.addAll(espectaculos.getElementsByTag("article"));
+		}
+	
 		Set<Note> titulos = new HashSet<Note>();
 		Date now = new Date();
 		
@@ -186,7 +168,7 @@ public class PageDownloader {
 				else
 				{
 					if(!Conexion.isNetworkInterfacesAvailable())
-							System.out.println("No hay intenet porque NO existe red habilitada! ");
+							System.out.println("No hay intenet porque NO hay red habilitada! ");
 					throw e;
 				}
 

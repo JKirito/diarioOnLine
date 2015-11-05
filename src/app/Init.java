@@ -25,7 +25,7 @@ public class Init {
 	static String MSJ_BUSCANDO_CAMBIOS = "Buscando cambios";
 	static String SEPARADOR = "##";
 	static boolean MOSTRAR_NOTICIAS = true;
-	static String MSJ_INGRESE_PARAMETROS_CORRECTAMENTE = "Ingrese correctamente los parámetros: 'pathGuardarArchivo(texto) SegundosABuscarNuevasNotas(Número) SoloPortada(true/false) MostrarNoticiasEnConsola(true/false)' ";
+	static String MSJ_INGRESE_PARAMETROS_CORRECTAMENTE = "Ingrese correctamente los parámetros: 'pathGuardarArchivo(texto) SegundosABuscarNuevasNotas(Número) MostrarNoticiasEnConsola(true/false)' ";
 	static Integer tiempoReconexion = 60;
 	static Integer pollTime;
 
@@ -33,7 +33,7 @@ public class Init {
 
 		//String pathAGuardar = "/home/pruebahadoop/Documentos/DataSets/diarioOnLine/LaNacion/";
 
-		if (args == null || args.length != 4) {
+		if (args == null || args.length != 3) {
 			System.err.println(MSJ_INGRESE_PARAMETROS_CORRECTAMENTE);
 			System.exit(1);
 		}
@@ -62,22 +62,14 @@ public class Init {
 		}
 		
 		
-		//SOLO PORTADA [2]
-		if(!args[2].equalsIgnoreCase("true") && !args[2].equalsIgnoreCase("false")) {
-			System.err.println(MSJ_INGRESE_PARAMETROS_CORRECTAMENTE);
-			System.err.println("El parámetro SoloPortada = true solamente buscará y descargará títulos de la portada online");
-			System.err.println("El parámetro SoloPortada = false buscará y descargará tanto títulos de la portada como mosaico online");
-			System.exit(1);
-		}
-		boolean soloPortada = args[2].equalsIgnoreCase("true") ? true : false;
 
-		//MOSTRAR NOTICIAS [3]
-		if(!args[3].equalsIgnoreCase("true") && !args[3].equalsIgnoreCase("false")) {
+		//MOSTRAR NOTICIAS [2]
+		if(!args[2].equalsIgnoreCase("true") && !args[2].equalsIgnoreCase("false")) {
 			System.err.println(MSJ_INGRESE_PARAMETROS_CORRECTAMENTE);
 			System.exit(1);
 		}
 		
-		MOSTRAR_NOTICIAS = args[3].equalsIgnoreCase("true") ? true : false;
+		MOSTRAR_NOTICIAS = args[2].equalsIgnoreCase("true") ? true : false;
 		
 		//Carpeta extra para los títulos
 		String pathTitulos = pathAGuardar+File.separatorChar+"titulos"+File.separatorChar;
@@ -99,7 +91,7 @@ public class Init {
 
 		while (true) {
 //			Date init = new Date();
-			PageDownloader pd = new PageDownloader(dLaNacion, soloPortada);
+			PageDownloader pd = new PageDownloader(dLaNacion);
 			Set<Note> nuevosTitulos = null;
 			boolean pausarDescarga = false;
 			boolean detener = false;
@@ -259,7 +251,7 @@ public class Init {
 			ultimoMsj = mensaje;
 		
 		if(mensaje.equals(MSJ_BUSCANDO_CAMBIOS))
-			mensaje+= " (cada "+pollTime+" segs)";
+			mensaje = Utils.dtoYYYY_MM_DD_HH_mm_ss(new Date())+ ": " + mensaje + " (cada "+pollTime+" segs)";
 		if(nuevaLinea)
 			System.out.println(mensaje);
 		else

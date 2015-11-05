@@ -67,7 +67,7 @@ public class NoteDownloader implements Callable<Note> {
 		}
 
 		Document nuevoDoc = this.getDiario().getNotaPreProcesadaFromDocument(doc);
-		if(nuevoDoc == null)
+		if(nuevoDoc == null && !link.contains("lanacion.com.ar"))
 			System.out.println("LINK: "+link);
 		Note nota = diario.getNotaProcesadaFromDocument(nuevoDoc);
 		nota.setLink(this.link);
